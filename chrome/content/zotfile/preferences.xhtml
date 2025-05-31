@@ -1,0 +1,206 @@
+<vbox xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+      xmlns:html="http://www.w3.org/1999/xhtml"
+      onload="ZotFilePreferences.init()">
+
+    <linkset>
+        <html:link rel="localization" href="zotfile.ftl"/>
+    </linkset>
+
+    <groupbox>
+        <label><html:h2>General Settings</html:h2></label>
+        
+        <vbox id="zotfile-source-folder">
+            <label class="preferences-title">Attachments Source Folder</label>
+            <description style="width: 420px">Source folder for new attachments from ZotFile</description>
+            <separator/>
+            <hbox style="margin: 0" align="center">
+                <html:input type="text" id="zotfile-source-dir" preference="extensions.zotfile.source_dir" style="flex: 1"/>
+                <button id="zotfile-source-dir-button" label="Choose..." oncommand="ZotFilePreferences.chooseSourceDirectory()"/>
+            </hbox>
+        </vbox>
+
+        <separator/>
+
+        <vbox id="zotfile-location-settings">
+            <label class="preferences-title">Location of Files</label>
+            <description style="width: 420px">Location where new attachments are stored</description>
+            <separator/>
+
+            <radiogroup id="zotfile-import" preference="extensions.zotfile.import">
+                <radio label="Attach stored copy of file(s)" value="true"/>
+                <hbox style="margin: 0" align="center">
+                    <radio label="Custom Location" value="false"/>
+                    <html:input type="text" id="zotfile-dest-dir" preference="extensions.zotfile.dest_dir" style="flex: 1"/>
+                    <button id="zotfile-dest-dir-button" label="Choose..." oncommand="ZotFilePreferences.chooseDestDirectory()"/>
+                </hbox>
+            </radiogroup>
+            
+            <hbox style="margin: 0" align="center">
+                <checkbox id="zotfile-subfolder" label="Use subfolder defined by" preference="extensions.zotfile.subfolder"/>
+                <html:input type="text" id="zotfile-subfolder-format" preference="extensions.zotfile.subfolderFormat" width="100"/>
+            </hbox>
+        </vbox>
+    </groupbox>
+
+    <groupbox>
+        <label><html:h2>Tablet Settings</html:h2></label>
+        
+        <description width="420px">Send PDFs or other files to your tablet and extract annotations when getting the file back</description>
+        <separator/>
+        <checkbox id="zotfile-tablet" label="Use ZotFile to send and get files from tablet" preference="extensions.zotfile.tablet"/>
+        <separator/>
+
+        <vbox id="zotfile-tablet-location">
+            <label class="preferences-title">Location on Tablet</label>
+            <label value="Base Folder"/>
+            <hbox style="margin: 0" align="center">
+                <html:input type="text" id="zotfile-tablet-dest-dir" preference="extensions.zotfile.tablet.dest_dir" style="flex: 1"/>
+                <button id="zotfile-tablet-dest-dir-button" label="Choose..." oncommand="ZotFilePreferences.chooseTabletDirectory()"/>
+                <button id="zotfile-tablet-dest-dir-show" label="Show Folder" oncommand="ZotFilePreferences.showTabletFolder()"/>
+            </hbox>
+            <label style="font-size: 9px">e.g. /home/user/Dropbox or /Users/user/Dropbox</label>
+            <separator/>
+
+            <label value="Subfolders"/>
+            <radiogroup id="zotfile-tablet-project-folders" preference="extensions.zotfile.tablet.projectFolders">
+                <radio label="Do not use subfolders" value="0"/>
+                <radio label="Create subfolders based on Zotero collections" value="1"/>
+                <hbox style="margin: 0">
+                    <radio label="Create custom subfolders" value="2"/>
+                    <button id="zotfile-tablet-project-folders-button" label="Change Subfolders" oncommand="ZotFilePreferences.openSubfolderWindow()"/>
+                </hbox>
+            </radiogroup>
+            <separator/>
+
+            <hbox style="margin: 0" align="center">
+                <checkbox id="zotfile-tablet-subfolder" label="Use additional subfolders defined by" preference="extensions.zotfile.tablet.subfolder"/>
+                <html:input type="text" id="zotfile-tablet-subfolder-format" preference="extensions.zotfile.tablet.subfolderFormat" width="100"/>
+            </hbox>
+        </vbox>
+
+        <vbox id="zotfile-tablet-options">
+            <label class="preferences-title">Additional Options</label>
+            <checkbox id="zotfile-tablet-rename" label="Rename when sending to tablet" preference="extensions.zotfile.tablet.rename"/>
+            <hbox style="margin: 0" align="center">
+                <checkbox id="zotfile-tablet-store-copy" label="Save a copy of annotated file with suffix" preference="extensions.zotfile.tablet.storeCopyOfFile"/>
+                <html:input type="text" id="zotfile-tablet-store-copy-suffix" preference="extensions.zotfile.tablet.storeCopyOfFile_suffix" width="130"/>
+            </hbox>
+            <checkbox id="zotfile-pdf-extraction-pull" label="Automatically extract annotations when getting files from tablet" preference="extensions.zotfile.pdfExtraction.Pull"/>
+        </vbox>
+    </groupbox>
+
+    <groupbox>
+        <label><html:h2>Renaming Rules</html:h2></label>
+        
+        <vbox id="zotfile-renaming-preview">
+            <label value="Preview of renaming rules based on currently selected item"/>
+            <hbox style="margin: 0">
+                <html:input type="text" id="zotfile-preview" readonly="true" style="flex: 1"/>
+                <button id="zotfile-preview-button" label="Update" oncommand="ZotFilePreferences.updatePreview()"/>
+            </hbox>
+        </vbox>
+        <separator/>
+
+        <vbox id="zotfile-renaming-format">
+            <label class="preferences-title">Renaming Format</label>
+            <checkbox label="Use Zotero to Rename" preference="extensions.zotfile.useZoteroToRename"/>
+            <separator/>
+
+            <label value="Format for all item types except patents"/>
+            <html:input type="text" id="zotfile-rename-format" preference="extensions.zotfile.renameFormat"/>
+            <label value="Format for patents"/>
+            <html:input type="text" id="zotfile-rename-format-patent" preference="extensions.zotfile.renameFormat_patent"/>
+            <label style="font-size: 9px" value="List of wildcards: {%a} author, {%t} title, {%j} journal etc."/>
+        </vbox>
+
+        <vbox id="zotfile-renaming-additional">
+            <label class="preferences-title">Additional Settings</label>
+            <hbox style="margin: 0">
+                <label value="Delimiter between multiple authors"/>
+                <html:input type="text" id="zotfile-authors-delimiter" preference="extensions.zotfile.authors_delimiter" width="50"/>
+            </hbox>
+            <hbox style="margin: 0">
+                <checkbox id="zotfile-user-input" label="Add user input to filename" preference="extensions.zotfile.userInput"/>
+                <html:input type="text" id="zotfile-user-input-default" preference="extensions.zotfile.userInput_Default" width="100"/>
+            </hbox>
+            <checkbox id="zotfile-lower-case" label="Use lower case" preference="extensions.zotfile.lower_case"/>
+            <checkbox id="zotfile-replace-blanks" label="Replace blanks" preference="extensions.zotfile.replace_blanks"/>
+            <checkbox id="zotfile-truncate-title" label="Truncate title after . or : or ?" preference="extensions.zotfile.truncate_title"/>
+            <hbox style="margin: 0">
+                <checkbox id="zotfile-truncate-title-max" label="Maximum length of title" preference="extensions.zotfile.truncate_title_max"/>
+                <html:input type="number" id="zotfile-max-title-length" preference="extensions.zotfile.max_titlelength" width="40"/>
+            </hbox>
+            <hbox style="margin: 0">
+                <checkbox id="zotfile-truncate-authors" label="Maximum number of authors" preference="extensions.zotfile.truncate_authors"/>
+                <html:input type="number" id="zotfile-max-authors" preference="extensions.zotfile.max_authors" width="40"/>
+            </hbox>
+            <hbox style="margin: 0">
+                <label value="If authors exceed maximum"/>
+                <html:input type="number" id="zotfile-number-truncate-authors" preference="extensions.zotfile.number_truncate_authors" width="40"/>
+            </hbox>
+            <hbox style="margin: 0">
+                <checkbox id="zotfile-add-etal" label="Add suffix when authors exceed maximum" preference="extensions.zotfile.add_etal"/>
+                <html:input type="text" id="zotfile-etal" preference="extensions.zotfile.etal" width="80"/>
+            </hbox>
+        </vbox>
+    </groupbox>
+
+    <groupbox>
+        <label><html:h2>Advanced Settings</html:h2></label>
+        
+        <vbox id="zotfile-extract-annotations">
+            <label class="preferences-title">Extract Annotations</label>
+            <label value="Extract annotations and highlighted text from PDF files"/>
+            <separator/>
+
+            <label value="Extraction Method"/>
+            <radiogroup id="zotfile-pdf-extraction-method" preference="extensions.zotfile.pdfExtraction.UsePDFJS">
+                <radio id="zotfile-pdf-extraction-pdfjs" label="Use pdf.js to extract annotations (recommended)" value="true"/>
+                <hbox style="margin: 0" align="center">
+                    <radio id="zotfile-pdf-extraction-poppler" label="Use poppler to extract annotations" value="false"/>
+                    <button id="zotfile-pdf-annotations-extractor-update-button" label="Check for Updates" oncommand="ZotFilePreferences.downloadPDFTool()"/>
+                </hbox>
+            </radiogroup>
+            <separator/>
+
+            <label value="Additional Options"/>
+            <checkbox id="zotfile-pdf-extraction-note-full-cite" label="Add full citation" preference="extensions.zotfile.pdfExtraction.NoteFullCite"/>
+            <checkbox id="zotfile-pdf-extraction-note-true-page" label="Use article/book chapter page" preference="extensions.zotfile.pdfExtraction.NoteTruePage"/>
+        </vbox>
+
+        <separator/>
+
+        <vbox id="zotfile-other-settings">
+            <label class="preferences-title">Other Advanced Settings</label>
+            <hbox align="center">
+                <label value="Automatic renaming of attachments"/>
+                <menulist id="zotfile-automatic-renaming" preference="extensions.zotfile.automatic_renaming">
+                    <menupopup>
+                        <menuitem label="Never" value="1"/>
+                        <menuitem label="Ask user" value="2"/>
+                        <menuitem label="Ask if at least two attachments" value="3"/>
+                        <menuitem label="Always" value="4"/>
+                    </menupopup>
+                </menulist>
+            </hbox>
+            <checkbox id="zotfile-confirmation" label="Ask when attaching new files" preference="extensions.zotfile.confirmation"/>
+            <hbox style="margin: 0" align="center">
+                <checkbox id="zotfile-confirmation-batch-ask" label="Ask to batch rename or move" preference="extensions.zotfile.confirmation_batch_ask"/>
+                <html:input type="number" id="zotfile-confirmation-batch" preference="extensions.zotfile.confirmation_batch" width="40"/>
+                <label value="or more attachments"/>
+            </hbox>
+            <checkbox id="zotfile-remove-diacritics" label="Remove special characters (diacritics etc) from filename" preference="extensions.zotfile.removeDiacritics"/>
+            <hbox style="margin: 0">
+                <checkbox id="zotfile-use-file-types" label="Only work with the following filetypes" preference="extensions.zotfile.useFileTypes"/>
+                <html:input type="text" id="zotfile-filetypes" preference="extensions.zotfile.filetypes" style="flex: 1"/>
+            </hbox>
+            <label value="Add saved searches for attachments on tablet"/>
+            <hbox>
+                <button id="zotfile-add-search" label="Attachments on Tablet" oncommand="ZotFilePreferences.createSavedSearch('tablet')"/>
+                <button id="zotfile-add-search2" label="Modified Attachments on Tablet" oncommand="ZotFilePreferences.createSavedSearch('tablet_modified')"/>
+            </hbox>
+        </vbox>
+    </groupbox>
+
+    <script src="chrome://zotfile/content/preferences.js"/>
+</vbox> 
